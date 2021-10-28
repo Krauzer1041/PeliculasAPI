@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Data;
+using PeliculasAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,37 @@ namespace PeliculasAPI.Controllers
         {
             var lista = await _db.Categorias.OrderBy(c => c.Nombre).ToListAsync();
             return Ok(lista);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetCategoria(int id)
+        {
+            var obj = await _db.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(obj);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CrearCategoria([FromBody] Categoria categoria)
+        {
+            if (categoria == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await _db.AddAsync(categoria);
+            await _db.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
