@@ -14,5 +14,6 @@ namespace PeliculasAPI.Data
 
         }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Pelicula> Peliculas { get; set; }
     }
 }
